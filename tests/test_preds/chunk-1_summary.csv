@@ -1,0 +1,182 @@
+Superclass	Class	Subclass	Subsystem	Count
+Protein Processing	Protein Synthesis	nan	Universal GTPases	20
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Pyruvate metabolism I: anaplerotic reactions, PEP	2
+Miscellaneous	Clustering-based subsystems	Cell Division	Cell division related cluster	21
+Membrane Transport	Membrane Transport	Multidrug efflux systems	Tripartite multidrug efflux systems (of RND type) MdtABC-TolC!MexXY System of Pseudomonas aeruginosa!Tripartite multidrug efflux systems (of RND type) in Pseudomonas	22
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein folding	Periplasmic disulfide interchange	7
+Membrane Transport	Membrane Transport	ABC transporters	Efflux ABC transporter MdlAB	1
+Metabolism, Energy	Amino Acids and Derivatives	Arginine; urea cycle, creatine, polyamines	Urea cycle	13
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Branched-chain amino acids and alpha-keto acids utilization as energy sources!Butyrate kinase pathway	68
+Protein Processing	Protein Synthesis	Ribosome biogenesis	Ribosome LSU, bacterial	165
+Metabolism, Energy	Metabolite damage and its repair or mitigation	nan	Nudix proteins (nucleoside triphosphate hydrolases)	14
+Cell Envelope	Cell Envelope, Capsule and Slime layer	Capsule and Slime layer	dTDP-rhamnose synthesis!dTDP-rhamnose synthesis -- gjo	2
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Resistance to antibiotics and toxic compounds	VraTSR and LiaFSR three-component regulatory systems	1
+DNA Processing	DNA Processing	DNA repair	DNA repair, bacterial MutHLS system	10
+Metabolism, Energy	Amino Acids and Derivatives	Arginine; urea cycle, creatine, polyamines	Arginine biosynthesis via N-acetyl-L-citrulline!Arginine biosynthesis	117
+Cellular Processes	Cell Cycle, Cell Division and Death	Programmed Cell Death and Toxin-antitoxin Systems	Phd-Doc, YdcE-YdcD toxin-antitoxin (programmed cell death) systems	9
+Metabolism, Energy	Carbohydrates	CO2 fixation	Methylenetetrahydrofolate reductase	51
+Protein Processing	Protein Synthesis	Translation	Translation initiation factors, bacterial	6
+Protein Processing	Protein Synthesis	Ribosome biogenesis	Ribosomal proteins, zinc requirement	55
+Protein Processing	Protein Synthesis	Aminoacyl-tRNA-synthetases	tRNA aminoacylation, Asp!tRNA aminoacylation, Asn	8
+Cellular Processes	Cell Cycle, Cell Division and Death	nan	Bacterial checkpoint-control-related cluster	1
+Metabolism, Energy	Respiration	Biogenesis of respiratory chain components	Biogenesis of c-type cytochromes	2
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Resistance to antibiotics and toxic compounds	Antibiotic targets in protein synthesis	1
+Cellular Processes	Prokaryotic cell type differentiation	Sporulation	Spore germinant receptors	15
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein folding	Prefoldin	10
+Metabolism, Energy	Amino Acids and Derivatives	Alanine, serine, and glycine	Glycine cleavage system	4
+Metabolism, Energy	Respiration	Biogenesis of respiratory chain components	Biogenesis of cytochrome c oxidases!Cytochrome bo ubiquinol oxidase!Heme O and Heme A biosynthesis!Heme O and Heme A biosynthesis (with selected terminal oxidases)	35
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Biotin	Biotin biosynthesis	10
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Fermentation	Fermentations: Lactate	9
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Resistance to antibiotics and toxic compounds	Zwittermicin A resistance	1
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Methylglyoxal Metabolism	5
+Protein Processing	Protein Synthesis	Ribosome biogenesis	Ribosomal proteins, single-copy	1
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Resistance to antibiotics and toxic compounds	Fusidic acid resistance	30
+Cellular Processes	Cell Cycle, Cell Division and Death	nan	FtsEX cell-division-associated signaling system	3
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein folding	Chaperones GroEL GroES and Thermosome	1
+Metabolism, Energy	Metabolite damage and its repair or mitigation	nan	Metabolite repair	48
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	2-ketoacid oxidoreductases disambiguation	2
+RNA Processing	RNA Processing	RNA processing and modification	Possible RNA modification and stress response cluster	2
+Metabolism, Energy	Nucleosides and Nucleotides	Purines	Xanthine dehydrogenase subunits	12
+Protein Processing	Protein Synthesis	Aminoacyl-tRNA-synthetases	tRNA aminoacylation, Glu!tRNA aminoacylation, Gln	12
+Metabolism, Energy	Amino Acids and Derivatives	Branched-chain amino acids	Degradation of branched-chain amino acids and alpha-keto acids [Leu, Val]	5
+DNA Processing	DNA Processing	DNA repair	DNA repair system including RecA, MutS and a hypothetical protein!RecA and RecX	5
+Metabolism, Energy	Respiration	Electron accepting reactions	Cytochrome d ubiquinol oxidase operon	19
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Stress Response	Cluster containing Glutathione synthetase	1
+Metabolism, Energy	Amino Acids and Derivatives	Proline and 4-hydroxyproline	Proline Synthesis!Proline biosynthesis (for review)	72
+Metabolism, Energy	Respiration	Electron donating reactions	Respiratory Complex I!NADH ubiquinone oxidoreductase!Multi-subunit cation antiporter!Respiratory complex I in plants (plastidial) and cyanobacteria!NADH ubiquinone oxidoreductase vs. multi-subunit cation antiporter	5
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Phospholipids	Glycerolipid and Glycerophospholipid Metabolism in Bacteria	2
+Metabolism, Energy	Amino Acids and Derivatives	Arginine; urea cycle, creatine, polyamines	Polyamine Metabolism	8
+Metabolism, Energy	Amino Acids and Derivatives	Alanine, serine, and glycine	D-3-phosphoglycerate to phosphoserine module	1
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Entner-Doudoroff Pathway	2
+Metabolism, Energy	Carbohydrates	CO2 fixation	Calvin-Benson cycle	3
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Glyoxylate bypass	1
+Metabolism, Energy	Amino Acids and Derivatives	Lysine, threonine, methionine, and cysteine	Aspartate to Homoserine module!Aspartate to Threonine Module	34
+DNA Processing	DNA Processing	DNA repair	DNA repair, bacterial RecFOR pathway	4
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Biotin	Biotin synthesis & utilization	17
+Metabolism, Energy	Sulfur Metabolism	Sulfur metabolism related	Sulfur metabolism related cluster	7
+Metabolism, Energy	Amino Acids and Derivatives	nan	Amino acid racemase	2
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Thiamin	Thiamin, hydroxymethylpyrimidine selected transporters!Thiamin, thiazole, hydroxymethylpyrimidine salvage and uptake	2
+Cellular Processes	Prokaryotic cell type differentiation	Sporulation	Spore germination	2
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Resistance to antibiotics and toxic compounds	Resistance to Daptomycin	4
+Cellular Processes	Cell Cycle, Cell Division and Death	Programmed Cell Death and Toxin-antitoxin Systems	Toxin-Antitoxin system HigAB	8
+Metabolism, Energy	Amino Acids and Derivatives	Proline and 4-hydroxyproline	A Hypothetical Protein Related to Proline Metabolism	1
+Metabolism, Energy	Nucleosides and Nucleotides	Purines	Nucleoside uptake and degradation cluster	1
+Metabolism, Energy	Respiration	Electron donating reactions	Succinate dehydrogenase and Fumarate reductase cpmlexes	1
+Metabolism, Energy	Amino Acids and Derivatives	Arginine; urea cycle, creatine, polyamines	Arginine decarboxylase and Agmatinase cluster	3
+Metabolism, Energy	Respiration	ATP synthases	F0F1-type ATP synthase	1
+Metabolism, Energy	Nucleosides and Nucleotides	Purines	IMP and Xanthine conversion to XMP and GMP module	3
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Invasion and intracellular resistance	M. tuberculosis complex-specific locus aprABC, adaptation to phagosome	3
+Protein Processing	Protein Synthesis	Translation	Programmed frameshift	2
+Membrane Transport	Membrane Transport	Cation transporters	Copper Transport System!Copper uptake system CopCD	2
+Membrane Transport	Membrane Transport	Protein and nucleoprotein secretion system, Type IV	Type 4 secretion and conjugative transfer	9
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Glycolysis and Gluconeogenesis, including Archaeal enzymes!Glycolysis and Gluconeogenesis	1
+Metabolism, Energy	Nucleosides and Nucleotides	Purines	Purine nucleotide synthesis regulator	5
+RNA Processing	RNA Processing	RNA processing and modification	YrdC-YciO-Sua5 and associated protein families!Threonylcarbamoyladenosine	3
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Fatty acids	Putative oxidase COG2907	1
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Fermentation	Fermentations: Mixed acid	3
+Metabolism, Energy	Amino Acids and Derivatives	Arginine; urea cycle, creatine, polyamines	Putrescine utilization	2
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Fatty acids	Fatty acid catabolic operon fadN-fadA-fadE (yusJKL)	1
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Folate and pterines	Molybdenum cofactor biosynthesis	1
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein targeting, sorting, translocation	Twin-arginine translocation system	3
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Biotin	Biotin synthesis cluster	1
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Anaerobic module of TCA	3
+Metabolism, Energy	Nucleosides and Nucleotides	Purines	DeNovo Purine Biosynthesis	6
+Metabolism, Energy	Amino Acids and Derivatives	Branched-chain amino acids	HMG CoA Synthesis	34
+Membrane Transport	Membrane Transport	Protein and nucleoprotein secretion system, Type IV	Vir-like type 4 secretion system	1
+Membrane Transport	Membrane Transport	nan	Lipopolysaccharide transporter LptABC!Lpt lipopolysaccharide transport system!Ribosomal hibernation related cluster	1
+Cellular Processes	Cell Cycle, Cell Division and Death	Stationary phase, Dormancy, Persistence	HipAB system implicated in growth arrest, persistence and drug tolerance	9
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein processing and modification	Signal peptidase	2
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Stress Response: Heat/cold shock	Heat shock dnaK gene cluster extended	7
+RNA Processing	RNA Processing	RNA processing and modification	RNA processing and degradation, bacterial	2
+DNA Processing	DNA Processing	DNA repair	DNA repair, bacterial RecBCD pathway!ATP-dependent Nuclease	1
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	TCA Cycle!2-oxoglutarate dehydrogenase!Lipoylated proteins	30
+Metabolism, Energy	Carbohydrates	C-1 compound metabolism	One-carbon metabolism by tetrahydropterines	1
+Regulation And Cell Signaling	Regulation and Cell signaling	nan	Stringent Response, (p)ppGpp metabolism	1
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Phospholipids	Cardiolipin biosynthesis	1
+Cellular Processes	Prokaryotic cell type differentiation	Sporulation	Sporulation Cluster	1
+Cellular Processes	Cell Cycle, Cell Division and Death	nan	Two cell division clusters relating to chromosome partitioning	8
+RNA Processing	RNA Processing	RNA processing and modification	rRNA modification related cluster including tlyA	1
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Pyridoxine	Pyridoxin (Vitamin B6) Biosynthesis	2
+Protein Processing	Protein Synthesis	Aminoacyl-tRNA-synthetases	Mupirocin resistance!tRNA aminoacylation, Ile	1
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Folate and pterines	Folate Biosynthesis	1
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Riboflavin, FMN, FAD	Riboflavin, FMN and FAD metabolism with fusion events	1
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein degradation	CtsR and MscAB regulation of protein degradation	2
+Metabolism, Energy	Amino Acids and Derivatives	Aromatic amino acids and derivatives	Phenylalanine and Tyrosine synthesis 1	1
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Stress Response	Glutathione: Biosynthesis and gamma-glutamyl cycle!Methylhydantoinase	1
+Membrane Transport	Membrane Transport	ABC transporters	Dpp dipeptide ABC transport system!Glutathione ABC transporter	1
+Cellular Processes	Cell Cycle, Cell Division and Death	Programmed Cell Death and Toxin-antitoxin Systems	MazEF toxin-antitoxing (programmed cell death) system	9
+Cellular Processes	Cell Cycle, Cell Division and Death	nan	Cell division initiation related cluster	1
+Cellular Processes	Prokaryotic cell type differentiation	Sporulation	Sporulation gene orphans	1
+DNA Processing	DNA Processing	DNA uptake, competence	DNA processing cluster	4
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Isoprenoids	Isoprenoid Biosynthesis: Interconversions	1
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Isoprenoids	Nonmevalonate Branch of Isoprenoid Biosynthesis	2
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Glycolate, glyoxylate interconversions	3
+Metabolism, Energy	Carbohydrates	CO2 fixation	Photorespiration (oxidative C2 cycle)	2
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Lipoic acid	Lipoic acid metabolism	4
+Metabolism, Energy	Amino Acids and Derivatives	Lysine, threonine, methionine, and cysteine	Diaminopimelate Synthesis!Lysine DAP biosynthetic pathway	2
+Metabolism, Energy	Carbohydrates	CO2 fixation	Acetyl-CoA Pathway Wood-Ljungdahl	4
+Metabolism, Energy	Respiration	Hydrogenases	Carbon monoxide induced hydrogenase	10
+Metabolism, Energy	Carbohydrates	Monosaccharides	D-Galacturonate and D-Glucuronate Utilization	6
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Pentose phosphate pathway	1
+Metabolism, Energy	Carbohydrates	Sugar alcohols	Ethanolamine utilization	23
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Pyruvate formate-lyase cluster!Pyruvate formate-lyase cluster with possible role in choline utilization	3
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Pyruvate metabolism II: acetyl-CoA, acetogenesis from pyruvate	2
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Fatty acids	Fatty acid synthesis!Fatty Acid Biosynthesis FASII!Enoyl-[ACP] reductases disambiguation!Fatty Acid Biosynthesis cluster!Acyl carrier protein!Resistance to Triclosan	1
+RNA Processing	RNA Processing	RNA processing and modification	tRNA thiolation	2
+Miscellaneous	Miscellaneous	nan	4-hydroxybenzoyl-CoA reductase	12
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism	Pyruvate:ferredoxin oxidoreductase	6
+Membrane Transport	Membrane Transport	ABC transporters	Nucleoside ABC transporter cluster	1
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein degradation	Proteasome bacterial	2
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein folding	Protein chaperones	7
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Coenzyme A		1
+DNA Processing	DNA Processing	DNA repair		8
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Resistance to antibiotics and toxic compounds		11
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Central Metabolism		9
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Isoprenoids		2
+Cellular Processes	Cell Cycle, Cell Division and Death	nan		5
+Metabolism, Energy	Carbohydrates	Di- and oligosaccharides		4
+RNA Processing	RNA Processing	RNA processing and modification		16
+Protein Processing	Protein Synthesis	Ribosome biogenesis		5
+Metabolism, Energy	Energy and Precursor Metabolites Generation	Fermentation		2
+Metabolism, Energy	Carbohydrates	CO2 fixation		10
+Metabolism, Energy	Nucleosides and Nucleotides	nan		3
+Protein Processing	Protein Synthesis	nan		4
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein processing and modification		2
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Fatty acids		2
+Membrane Transport	Membrane Transport	ABC transporters		1
+Metabolism, Energy	Fatty Acids, Lipids, and Isoprenoids	Phospholipids		3
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Pyridoxine		5
+Membrane Transport	Membrane Transport	Cation transporters		1
+Metabolism, Energy	Amino Acids and Derivatives	Alanine, serine, and glycine		9
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Stress Response		2
+Cellular Processes	Prokaryotic cell type differentiation	Sporulation		3
+Metabolism, Energy	Amino Acids and Derivatives	Proline and 4-hydroxyproline		5
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Biotin		6
+Metabolism, Energy	Amino Acids and Derivatives	Lysine, threonine, methionine, and cysteine		2
+Metabolism, Energy	Nucleosides and Nucleotides	Pyrimidines		4
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Stress Response: Heat/cold shock		2
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Folate and pterines		4
+Protein Processing	Protein Synthesis	Translation		1
+Metabolism, Energy	Amino Acids and Derivatives	Histidine Metabolism		3
+Metabolism, Energy	Metabolite damage and its repair or mitigation	nan		2
+Metabolism, Energy	Nitrogen Metabolism	Nitrogen Metabolism Subclass		1
+Miscellaneous	Miscellaneous	nan		4
+Metabolism, Energy	Nucleosides and Nucleotides	Purines		2
+Metabolism, Energy	Amino Acids and Derivatives	Arginine; urea cycle, creatine, polyamines		4
+Metabolism, Energy	Respiration	Biogenesis of respiratory chain components		3
+Metabolism, Energy	Respiration	Electron donating reactions		1
+Metabolism, Energy	Secondary Metabolism	Metabolism of Aromatic Compounds		1
+Cellular Processes	Cell Cycle, Cell Division and Death	Programmed Cell Death and Toxin-antitoxin Systems		1
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	Stress Response: Osmotic stress		2
+Protein Processing	Protein Synthesis	Aminoacyl-tRNA-synthetases		2
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)	Protein folding		1
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	Tetrapyrroles		2
+Membrane Transport	Membrane Transport	nan		1
+Metabolism, Energy	Cofactors, Vitamins, Prosthetic Groups	NAD and NADP		2
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence	nan		3
+Metabolism, Energy	Amino Acids and Derivatives	Aromatic amino acids and derivatives		1
+Metabolism, Energy	Amino Acids and Derivatives			2
+Stress Response, Defense, Virulence	Stress Response, Defense and Virulence			2
+DNA Processing	DNA Processing			1
+Protein Processing	Protein Fate (folding, modification, targeting, degradation)			2
+Metabolism, Energy	Energy and Precursor Metabolites Generation			1
