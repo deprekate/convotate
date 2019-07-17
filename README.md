@@ -30,6 +30,7 @@ Trouble Shooting
 --------------
 Older versions of OSX have difficulty running TensorFlow.  It is recommended to use Python 3.6 and TensorFlow 1.9 for compatibility.
 
+First you can install the older version of TensorFlow from the direct url using pip; then fetch the other requirements using pip.
 ```
 python3.6 -m pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.9.0-py3-none-any.whl
 python3.6 -m pip install -r requirements.txt

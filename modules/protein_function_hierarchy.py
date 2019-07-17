@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 # import matplotlib.pyplot as plt
@@ -316,9 +315,9 @@ class Hierarchical_Protein_Classification():
             self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
             self.save_discarded(chunk_count, save_path = save_path)
 
-    #             self.output_DataFrame = self.make_output_DataFrame()
-    #             start = chunk_count*self._sequence_file.chunksize
-    #             self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))
+    #       self.output_DataFrame = self.make_output_DataFrame()
+    #       start = chunk_count*self._sequence_file.chunksize
+    #       self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))
 
             chunk_count += 1
 
@@ -342,7 +341,6 @@ class Hierarchical_Protein_Classification():
         
         
     def predict_chunk(self):
-        
         # self.sequences = self._sequence_file.get_chunk()
         
         # 3. build hashtable of classification 

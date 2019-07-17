@@ -18,3 +18,5 @@ hi = ph.Hierarchical_Protein_Classification(
                  base_models_pattern = 'finalmodels/*bigdata.h5',             
                  chunksize = 1000, max_seq_len = 1950, confidence_threshold = 0.9,
 )
+
+#hi.predict_all(save_path='test_preds/')

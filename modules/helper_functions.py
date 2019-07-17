@@ -14,6 +14,6 @@ def get_args():
     parser.add_argument('infile', type=is_valid_file, help='input file in fasta format')
     parser.add_argument('-o', '--outfile', action="store", default=sys.stdout, type=argparse.FileType('w'), help='where to write the output [stdout]')
     #parser.add_argument('-f', '--outfmt', action="store", default="tabular", dest='outfmt', help='format of the output [tabular]', choices=['tabular','genbank','fasta'])
-    #parser.add_argument('-d', '--dump', action="store_true")
+    parser.add_argument('-c', '--confidence', action="store", type=float, default=0.9, dest='confidence_threshold', help='confidence threshold cutoff [0.9]')
     args = parser.parse_args()
     return args
