@@ -158,18 +158,18 @@ def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32
     return model_base
 
 
-
 class Hierarchical_Protein_Classification():
     def __init__(self,
-                 sequence_file = '../../../ML_datasets/proteins-112718/full_PATRIC_ENOG_aadump.txt',
-                 model_label_refs ='model_label_referencefile_190620.pkl',
-                 ontology_file = '../../new-ontology/Ontology_20190609_Final.txt', 
-                 subsystem_merge_file = '../../new-ontology/Subsystem_Name_toMerged_mapping.txt',
-                 subsys_sets_idx_file = './setlabel_subsystemlabel_xref_190620.pkl',
-                 set_files_pattern = 'boostmodels/set*_subsystems_model_ker50.h5',
-                 base_models_pattern = 'finalmodels/*bigdata.h5', 
-                 
-                 chunksize = 2000, max_seq_len = 1950, confidence_threshold = 0.99,
+                 sequence_file,
+                 model_label_refs,
+                 ontology_file,
+                 subsystem_merge_file,
+                 subsys_sets_idx_file,
+                 set_files_pattern,
+                 base_models_pattern,
+                 chunksize,
+		 max_seq_len,
+		 confidence_threshold,
                 ):
         self.max_seq_len = max_seq_len
         self._sequence_file = pd.read_csv(sequence_file ,sep ='\t', iterator=True, chunksize=chunksize )
