@@ -1,15 +1,15 @@
 Introduction
 ------------
 
-MODEL is a tool to classify genes.
+CONVOTATE is a tool to classify genes.
 
-To install `MODEL`,
+To install `CONVOTATE`,
 ```sh
- git clone git@github.com:deprekate/model_package.git
- cd model_package; make
+ git clone git@github.com:deprekate/convotate.git
+ cd convotate; make
 ```
 
-MODEL Example
+CONVOTATE Example
 --------------
 
 Run on included sample data:
