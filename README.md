@@ -14,7 +14,7 @@ CONVOTATE Example
 
 Run on included sample data:
 ```sh
-./model.py tests/small.fasta 
+python3 convotate.py tests/small.fasta 
 ```
 Output is the predicted functions, and should look like
 ```sh
