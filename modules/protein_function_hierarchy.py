@@ -158,19 +158,11 @@ def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32
     return model_base
 
 
-class Hierarchical_Protein_Classification():
-    def __init__(self,
-                 sequence_file,
-                 model_label_refs,
-                 ontology_file,
-                 subsystem_merge_file,
-                 subsys_sets_idx_file,
-                 set_files_pattern,
-                 base_models_pattern,
-                 chunksize,
-		 max_seq_len,
-		 confidence_threshold,
-                ):
+class HierarchicalProteinClassification():
+    def __init__(self, **kwargs):
+        self.a = 1
+        print(kwargs)
+        '''
         self.max_seq_len = max_seq_len
         self._sequence_file = pd.read_csv(sequence_file ,sep ='\t', iterator=True, chunksize=chunksize )
         self._ontology_file = pd.read_csv(ontology_file, sep='\t')
@@ -185,7 +177,7 @@ class Hierarchical_Protein_Classification():
         self.load_trained_models(base_models_pattern,set_files_pattern )
         
         self.classification_level = {i:k for i,k in enumerate(['Superclass', 'Class', 'Subclass', 'Subsystem']) }
-
+        '''
         
     def get_ontology(self ):
         ont = self._ontology_file
