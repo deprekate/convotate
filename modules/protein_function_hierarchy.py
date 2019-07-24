@@ -1,13 +1,11 @@
-import pandas as pd
-import numpy as np
-# import matplotlib.pyplot as plt
+import os
+import re
 import pickle as pk
-
-# from numpy import random 
 from glob import glob
 
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+import pandas as pd
+import numpy as np
+
 
 from keras.optimizers import Adam, RMSprop
 
@@ -19,11 +17,9 @@ from keras.layers import LeakyReLU, Dropout, PReLU
 from keras.layers import BatchNormalization
 from keras.optimizers import Adam, RMSprop
 
-
 # from tensorflow.examples.tutorials.mnist import input_data
 
 # from spp.SpatialPyramidPooling import SpatialPyramidPooling
-
 
 import tensorflow as tf
 sess = tf.InteractiveSession()
@@ -37,6 +33,13 @@ from keras.models import load_model
 
 from keras.engine.topology import Layer
 import keras.backend as K
+
+os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+
+def natural_sorted(unsorted_list): 
+    convert = lambda text: int(text) if text.isdigit() else text.lower() 
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)] 
+    return sorted(unsorted_list, key=alphanum_key)
 
 
 class SpatialPyramidPooling1D(Layer):
@@ -160,22 +163,19 @@ def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32
 
 class HierarchicalProteinClassification():
     def __init__(self, **kwargs):
-        self.a = 1
-        print(kwargs)
-        '''
-        self.max_seq_len = max_seq_len
-        self._sequence_file = pd.read_csv(sequence_file ,sep ='\t', iterator=True, chunksize=chunksize )
-        self._ontology_file = pd.read_csv(ontology_file, sep='\t')
-        self._subsystem_map = {k:v for k,v in pd.read_csv(subsystem_merge_file, sep= '\t').values}
+        self.__dict__.update(kwargs)
+        self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
+        self._ontology_file = pd.read_csv(self.ontology_file, sep='\t')
+        self._subsystem_map = {k:v for k,v in pd.read_csv(self.merged_file, sep= '\t').values}
         # model_label_refs contains map of classification indices to name of label classes for all levels of hierarchy and all sets 
-        self.model_label_refs = pk.load(open(model_label_refs,'rb'))
+        self.model_label_refs = pk.load(open(self.label_file,'rb'))
         self.ontology = self.get_ontology()
         
-        self.confidence_threshold = confidence_threshold 
-        self.get_subsystem_sets_map(subsys_sets_idx_file)
+        self.get_subsystem_sets_map(self.indexes_file)
         
-        self.load_trained_models(base_models_pattern,set_files_pattern )
+        self.load_trained_models(self.basemodel_files, self.pattern_files)
         
+        '''
         self.classification_level = {i:k for i,k in enumerate(['Superclass', 'Class', 'Subclass', 'Subsystem']) }
         '''
         
@@ -206,21 +206,19 @@ class HierarchicalProteinClassification():
         
     def load_base_models(self, base_models_pattern):
         print('Loading base models...')
-        
-        base_files_weight_list = glob(base_models_pattern)
+       
         self.base_models = {}
-        for fpath in base_files_weight_list:
+        for fpath in glob(os.path.join(base_models_pattern, '*.h5')):
             path, fname = os.path.split(fpath)
             k = fname.split('_model')[0].capitalize() # caps for consistency with label refs
             print('Loading %s from: %s' %(k,fpath))
-            self.base_models[k] = make_set_model(fpath, max_len = self.max_seq_len)
+            self.base_models[k] = make_set_model(fpath, max_len = self.max_length)
     
     def load_model_sets(self,set_files_pattern):
         print('Loading ambiguous subsystem sets models...')
         
-        set_files = glob(set_files_pattern)
         sets_info = {}
-        for fpath in sorted(set_files):
+        for fpath in natural_sorted(glob(os.path.join(set_files_pattern, '*.h5'))):
             path, fname = os.path.split(fpath)
             k = int(fname.split('set')[1].split('_subsystems')[0])
             sets_info[k] = {'file': fpath, 'classes': self.set_class_list[k]}
@@ -228,7 +226,7 @@ class HierarchicalProteinClassification():
         self.model_sets = {}
         for k in sets_info:
             print('Loading %s from: %s' %(k,sets_info[k]['file']))
-            self.model_sets[k] = make_set_model(sets_info[k]['file'], max_len= self.max_seq_len) 
+            self.model_sets[k] = make_set_model(sets_info[k]['file'], max_len= self.max_length) 
 
         
     def save_output_files(self, chunk_idx, save_path='.', delimiter = '\t'):
@@ -308,7 +306,7 @@ class HierarchicalProteinClassification():
             self.save_discarded(chunk_count, save_path = save_path)
 
     #       self.output_DataFrame = self.make_output_DataFrame()
-    #       start = chunk_count*self._sequence_file.chunksize
+    #       start = chunk_count*self._sequence_file.batch_size
     #       self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))
 
             chunk_count += 1
@@ -325,7 +323,7 @@ class HierarchicalProteinClassification():
                 break
             self.predict_chunk()
             self.output_DataFrame = self.make_output_DataFrame()
-            start = chunk_count*self._sequence_file.chunksize
+            start = chunk_count*self._sequence_file.batch_size
             self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))
             
             chunk_count += 1
@@ -406,7 +404,7 @@ class HierarchicalProteinClassification():
         send_up_hierarchy_idx = [] # classify these with higher levels of hierarchy
         
         # 1. convert sequence to barcode
-        test_data = np.array([barcode1(seq, length=self.max_seq_len) for seq in prots['feature.aa_sequence']])
+        test_data = np.array([barcode1(seq, length=self.max_length) for seq in prots['feature.aa_sequence']])
         # 2. classify with 'Susbsystem' model
         # subsys_model = base_models['Subsystem'] # !!! resolve naming discrepency: base model file names 'subsystem', not 'Subsystem Merged'
         predictions_initial = model.predict(test_data)
