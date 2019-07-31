@@ -7,7 +7,7 @@ import h5py
 import pandas as pd
 import numpy as np
 
-from helper_functions import natural_sort
+from modules.helper_functions import natural_sorted
 
 from keras.optimizers import Adam, RMSprop
 
