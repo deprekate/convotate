@@ -1,7 +1,13 @@
 import os
+import re
 import sys
 import argparse
 from argparse import RawTextHelpFormatter
+
+def natural_sorted(unsorted_list):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(unsorted_list, key=alphanum_key)
 
 def is_valid_file(x):
     if not os.path.exists(x):
@@ -28,8 +34,19 @@ def get_args():
     args = parser.parse_args()
     return args
 
+class FastaFile():
+    def __init__(self, file_path, chunk_size):
+        self._file_path = open(file_path)
+        self._chunk_size = chunk_size
 
-def read_fasta(fasta_filepath):
+    def get_chunk(self):
+        while True:
+            data = self._file_path.read(self._chunk_size)
+            if not data:
+                break
+            yield data
+
+def read_fasta(file_object):
     # standard fasta file reading where a sequence is composed
     # of a header line that starts with > and a number of lines
     # with characters corresponding to the amino-acids
@@ -47,5 +64,5 @@ def read_fasta(fasta_filepath):
         fasta_sequences[seq_head] = seq_data
     # get rid of empty first sequence added
     if '' in fasta_sequences:
-	    del fasta_sequences['']
-    return fasta_sequences
+        del fasta_sequences['']
+    yield fasta_sequences

@@ -1,5 +1,4 @@
 import os
-import re
 import pickle as pk
 from glob import glob
 import string
@@ -8,6 +7,7 @@ import h5py
 import pandas as pd
 import numpy as np
 
+from helper_functions import natural_sort
 
 from keras.optimizers import Adam, RMSprop
 
@@ -35,12 +35,6 @@ set_session(tf.InteractiveSession())
 
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 
-def natural_sorted(unsorted_list): 
-    convert = lambda text: int(text) if text.isdigit() else text.lower() 
-    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)] 
-    return sorted(unsorted_list, key=alphanum_key)
-
-
 class SpatialPyramidPooling1D(Layer):
     """Spatial pyramid pooling layer for 2D inputs.
     See Spatial Pyramid Pooling in Deep Convolutional Networks for Visual Recognition,
@@ -59,14 +53,10 @@ class SpatialPyramidPooling1D(Layer):
     """
 
     def __init__(self, pool_list, **kwargs):
-
         self.dim_ordering = K.image_dim_ordering()
         assert self.dim_ordering in {'tf', 'th'}, 'dim_ordering must be in {tf, th}'
-
         self.pool_list = pool_list
-
         self.num_outputs_per_channel = sum([i for i in pool_list])
-
         super(SpatialPyramidPooling1D, self).__init__(**kwargs)
 
     def build(self, input_shape):
@@ -84,42 +74,32 @@ class SpatialPyramidPooling1D(Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
     def call(self, x, mask=None):
-
         input_shape = K.shape(x)
-
         if self.dim_ordering == 'th':
             num_rows = input_shape[2]
         elif self.dim_ordering == 'tf':
             num_rows = input_shape[1]
-
         row_length = [K.cast(num_rows, 'float32') / i for i in self.pool_list]
-
         outputs = []
-
         if self.dim_ordering == 'tf':
             for pool_num, num_pool_regions in enumerate(self.pool_list):
                 for jy in range(num_pool_regions):
                         y1 = jy * row_length[pool_num]
                         y2 = jy * row_length[pool_num] + row_length[pool_num]
-
                         y1 = K.cast(K.round(y1), 'int32')
                         y2 = K.cast(K.round(y2), 'int32')
-
                         new_shape = [input_shape[0], y2 - y1,
                                      input_shape[-1]]
-
                         x_crop = x[:, y1:y2, :]
                         xm = K.reshape(x_crop, new_shape)
                         pooled_val = K.max(xm, axis=(1,))
                         outputs.append(pooled_val)
         else:
             raise TypeError()
-
         if self.dim_ordering == 'th':
             outputs = K.concatenate(outputs)
         elif self.dim_ordering == 'tf':
             outputs = K.concatenate(outputs)
-            
         return outputs
     
 amino_acids = {a:i for i,a in enumerate(string.ascii_uppercase+'_')} # '_':unknown stuff
@@ -161,7 +141,9 @@ def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32
 class HierarchicalProteinClassification():
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+        #self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
         self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
+
         self._ontology_file = pd.read_csv(self.ontology_file, sep='\t')
         self._subsystem_map = {k:v for k,v in pd.read_csv(self.merged_file, sep= '\t').values}
         # model_label_refs contains map of classification indices to name of label classes for all levels of hierarchy and all sets 
@@ -360,6 +342,9 @@ class HierarchicalProteinClassification():
         labels_dict = {}
         send_up_hierarchy_idx = [] # classify these with higher levels of hierarchy
         # 1. convert sequence to barcode
+        print(prots)
+        for seq in prots.values():
+            print(seq)
         test_data = np.array([barcode1(seq, length=self.max_length) for seq in prots.values()])
         # 2. classify with 'Susbsystem' model
         # subsys_model = base_models['Subsystem'] # !!! resolve naming discrepency: base model file names 'subsystem', not 'Subsystem Merged'
