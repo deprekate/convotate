@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 
 from modules.helper_functions import natural_sorted
+from modules.helper_functions import FastaFile
 
 from keras.optimizers import Adam, RMSprop
 
@@ -142,7 +143,7 @@ class HierarchicalProteinClassification():
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         #self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
-        self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
+        self._sequence_file = FastaFile(self.infile, 3) 
 
         self._ontology_file = pd.read_csv(self.ontology_file, sep='\t')
         self._subsystem_map = {k:v for k,v in pd.read_csv(self.merged_file, sep= '\t').values}

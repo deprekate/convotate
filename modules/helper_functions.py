@@ -36,17 +36,33 @@ def get_args():
 
 class FastaFile():
     def __init__(self, file_path, chunk_size):
-        self._file_path = open(file_path)
-        self._chunk_size = chunk_size
+        self.fp = open(file_path)
+        self.chunk_size = chunk_size
+        self.head = ''
+        self.data = ''
+
+    def clean_dict(self, dictionary):
+        if '' in dictionary:
+            del dictionary['']
 
     def get_chunk(self):
-        while True:
-            data = self._file_path.read(self._chunk_size)
-            if not data:
-                break
-            yield data
+        sequences = dict()
+        for fasta_line in self.fp:
+            if(fasta_line.startswith(">")):
+                sequences[self.head] = self.data
+                self.head = fasta_line.split()[0]
+                self.data = ''
+            else:
+                self.data += fasta_line.replace("\n", "").upper()
+            if(len(sequences) == self.chunk_size):
+                self.clean_dict(sequences)
+                yield sequences
+                sequences.clear()
+        sequences[self.head] = self.data
+        self.clean_dict(sequences)
+        yield sequences
 
-def read_fasta(file_object):
+def read_fasta(fasta_filepath):
     # standard fasta file reading where a sequence is composed
     # of a header line that starts with > and a number of lines
     # with characters corresponding to the amino-acids

@@ -10,9 +10,9 @@ def main(argv):
 
     #input_sequences = helpers.read_fasta(cl_args.infile);
 
-    f = open(cl_args.infile, mode="r")
+    #f = open(cl_args.infile, mode="r")
 
-    #hi = ph.HierarchicalProteinClassification(input_sequences, **vars(cl_args))
+    hi = ph.HierarchicalProteinClassification(**vars(cl_args))
 
     #hi.predict_all(save_path='testpreds/')
 
