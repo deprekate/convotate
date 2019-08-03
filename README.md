@@ -35,3 +35,8 @@ First you can install the older version of TensorFlow from the direct url using 
 python3.6 -m pip install https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.9.0-py3-none-any.whl
 python3.6 -m pip install -r requirements.txt
 ```
+
+And then you can run `convotate` using python3.6
+```
+python3.6 convotate.py tests/small_testset.faa
+```

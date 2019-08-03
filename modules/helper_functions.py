@@ -56,11 +56,10 @@ class FastaFile():
                 self.data += fasta_line.replace("\n", "").upper()
             if(len(sequences) == self.chunk_size):
                 self.clean_dict(sequences)
-                yield sequences
-                sequences.clear()
+                return sequences
         sequences[self.head] = self.data
         self.clean_dict(sequences)
-        yield sequences
+        return sequences
 
 def read_fasta(fasta_filepath):
     # standard fasta file reading where a sequence is composed

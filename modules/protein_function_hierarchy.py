@@ -124,7 +124,7 @@ def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32
         elif 'dense' in k:
             dense_name = k
     weights_conv = weight_file['model_weights'][conv_name][conv_name]['kernel:0']
-    kernel_size, num_amino_acids, num_conv_filters  = weights_conv.shape
+    kernel_size, num_amino_acids, num_conv_filters = weights_conv.shape
     weights_dense = weight_file['model_weights'][dense_name][dense_name]['kernel:0']
     _in_dim, out_dim = weights_dense.shape
     model_base = Sequential()
@@ -132,12 +132,9 @@ def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32
     model_base.add(SpatialPyramidPooling1D(pool_list)) 
     model_base.add(Dropout(0.2))
     model_base.add(Dense(out_dim, activation='softmax'))
-    
     ### Finally, load trained weights
     model_base.load_weights(model_weight_file_path)
-    
     return model_base
-
 
 class HierarchicalProteinClassification():
     def __init__(self, **kwargs):
@@ -202,10 +199,10 @@ class HierarchicalProteinClassification():
         annotation_LCA_str = delimiter.join(['Sequence ID']+c_level+['Confidence'])
         full_annotation_str = delimiter.join(['Sequence ID','Full Annotation'])
         for k,v in self.protein_chunk_prediction_summary.items():
-            seq_id = self.sequences['feature.patric_id'].loc[k]
+            #seq_id = self.sequences[k]
             # LCA
             empty_line = ['']*(len(c_level)+2)
-            empty_line[0] = seq_id
+            empty_line[0] = k
             level, label, confidence = v[-1]
             for col, lab in zip(c_level, label.split('>')):
                 empty_line[map_level[col]] = lab
@@ -213,7 +210,7 @@ class HierarchicalProteinClassification():
             empty_line[ -1 ] = '%.4g' %v[-1][-1]
             annotation_LCA_str += '\n'+delimiter.join(empty_line)
             # Full annotation
-            full_annotation_str += '\n'+delimiter.join( [seq_id, str(v)])
+            full_annotation_str += '\n'+delimiter.join( [k, str(v)])
         with open(os.path.join(save_path,'chunk-%d.csv' %chunk_idx),'w') as f:
             f.write(annotation_LCA_str)
         with open(os.path.join(save_path,'chunk-%d_full.csv' %chunk_idx),'w') as f:
@@ -251,7 +248,7 @@ class HierarchicalProteinClassification():
         while True:
             print(chunk_count, end = ',')
             self.sequences = self._sequence_file.get_chunk()
-            if len(self.sequences) == 0:
+            if not self.sequences:
                 break
             self.predict_chunk()
             self.save_output_files(chunk_count, save_path = save_path, delimiter = delimiter)
@@ -298,9 +295,9 @@ class HierarchicalProteinClassification():
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem'][::-1]
         if len(self.send_up['Subsystem']) == 0: return 
         for i in range(1,len(c_level)):
-            print(c_level[i])
             self.labels_dict[c_level[i]], self.send_up[c_level[i]] = self.predict_one_model(
-                                                                       self.sequences.loc[self.send_up[c_level[i-1]]],
+                                                                       #self.sequences.loc[self.send_up[c_level[i-1]]],
+                                                                       dict([(key,self.sequences[key]) for key in self.send_up[c_level[i-1]]]),
                                                                        self.base_models[c_level[i]], check_subsys_sets=False
                                                                      )
             if len(self.send_up[c_level[i]]) == 0 :
@@ -311,7 +308,7 @@ class HierarchicalProteinClassification():
         # compile summary of predictions
         # the low confidence ones should have their lower level predictions included
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem'][::-1]
-        self.protein_chunk_prediction_summary = {i:[] for i in self.sequences.index}
+        self.protein_chunk_prediction_summary = {i:[] for i in self.sequences}
         for c in c_level:
             for label_index in self.labels_dict.get(c,[]):
                 pc = self.labels_dict[c][label_index]
@@ -319,15 +316,19 @@ class HierarchicalProteinClassification():
                     label_name = self.model_label_refs[c][label_index] 
                     self.protein_chunk_prediction_summary[i] += [(c,label_name,conf)]
 
-    def disambiguiate_subsystems(self,preds_dict, send_up):
+    def disambiguiate_subsystems(self, preds_dict, send_up):
         """Use model_sets to reclassify seqs classified into the ambiguous subsystems."""
         for sets_index, ss_list in self.set_class_list.items():
             reclassify_list = []
             for subsys in ss_list:
                 if subsys in preds_dict:
                     reclassify_list += preds_dict[subsys]['input_index'] 
-            if len(reclassify_list) >0:
-                preds_dict_set, send_up_set = self.predict_one_model(self.sequences.loc[reclassify_list], self.model_sets[sets_index] , check_subsys_sets=False) # no ambiguity
+            if len(reclassify_list) > 0:
+                preds_dict_set, send_up_set = self.predict_one_model(
+                                                dict([(key,self.sequences[key]) for key in reclassify_list]),
+                                                self.model_sets[sets_index],
+                                                check_subsys_sets=False
+                                              ) # no ambiguity
                 #send_up += send_up_set
                 #send_up = send_up.union(send_up_set)
                 for s in send_up_set:
@@ -343,22 +344,21 @@ class HierarchicalProteinClassification():
         labels_dict = {}
         send_up_hierarchy_idx = [] # classify these with higher levels of hierarchy
         # 1. convert sequence to barcode
-        print(prots)
-        for seq in prots.values():
-            print(seq)
-        test_data = np.array([barcode1(seq, length=self.max_length) for seq in prots.values()])
+        test_data = np.array([barcode1(sequence, length=self.max_length) for header,sequence in prots.items()])
         # 2. classify with 'Susbsystem' model
         # subsys_model = base_models['Subsystem'] # !!! resolve naming discrepency: base model file names 'subsystem', not 'Subsystem Merged'
         predictions_initial = model.predict(test_data)
         # for input_index, prediction in enumerate(subsystem_predictions_initial):
-        for input_index, prediction in zip(prots.index, predictions_initial):
-            # find the top predictions and report them witht heir confidence
+        # for input_index, prediction in zip(prots.index, predictions_initial):
+        # for input_index, prediction in enumerate(predictions_initial):
+        for input_index, prediction in zip(prots, predictions_initial):
+            # find the top predictions and report them with their confidence
             pred_top_idx = np.argsort(prediction)[::-1][:top]
             for label_idx in pred_top_idx:
                 labels_dict.setdefault(label_idx, {'input_index':[], 'confidence': [] })
                 labels_dict[label_idx]['input_index'] += [input_index] 
                 labels_dict[label_idx]['confidence'] += [prediction[label_idx]] 
-#                 if check_subsys_sets: continue # we will disambiguate, so don't count low conf unless not in subsys_to_set_map
+#               if check_subsys_sets: continue # we will disambiguate, so don't count low conf unless not in subsys_to_set_map
                 if prediction[label_idx] < self.confidence_threshold:
                     if check_subsys_sets:
                         # only send up if not in sets
@@ -381,7 +381,7 @@ class HierarchicalProteinClassification():
                 'Superclass', 'Class', 'Subclass', 'Subsystem','Confidence', 
                 'Full_classification']}
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']  
-        for i, idx in enumerate(self.sequences.index):
+        for i, idx in enumerate(self.sequences):
             output_dict['Full_classification'][i] = self.protein_chunk_prediction_summary[idx]
             level, label, confidence = self.protein_chunk_prediction_summary[idx][-1]
             # break down the last classification and put it under the right columns
