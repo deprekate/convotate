@@ -59,6 +59,8 @@ class FastaFile():
                 return sequences
         sequences[self.head] = self.data
         self.clean_dict(sequences)
+        self.head = ''
+        self.data = ''
         return sequences
 
 def read_fasta(fasta_filepath):
