@@ -2,7 +2,7 @@
 CONVOTATE is a tool to classify prokaryotic genes using neural network models. It reads in (translated) fasta files and returns predictions for function based on the Subsystems ontology. In our benchmarks, high confidence (>0.99) predictions returned AUC scores >0.999.
 
 Advantages of CONVOTATE:
-1. Fast: 20,000-70,000 annotations per minute with GPU, 500 per minute on a 13-inch macbook pro laptop.
+1. Fast: 20,000-70,000 annotations per minute with GPU, 600 per minute on a 13-inch macbook pro laptop.
 2. Low resource: <110MB disk space and scalable in RAM (can run with <1GB RAM if necessary).
 3. As it is a predictions tool, it is able to return a "best guess" for any input sequence irrespective of whether there are homology matches in other databases. 
 
