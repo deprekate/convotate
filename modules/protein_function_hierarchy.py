@@ -109,13 +109,13 @@ def barcode1(seq, length=1950, amino_acids=amino_acids):
     protein_barcodes = np.zeros((length, len(amino_acids)), dtype = np.float16)
     s = np.sqrt(len(amino_acids))
     for i2,j in enumerate(seq[:length]):
-        protein_barcodes[i2,amino_acids.get(j,26)] = 1 # if character not found, map to '_'
+        protein_barcodes[i2,amino_acids.get(j, 26)] = 1 # if character not found, map to '_'
         protein_barcodes[i2, amino_acids[j]] = 1 / s
     return protein_barcodes
 
 
 
-def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32] ):
+def make_set_model(model_weight_file_path,max_len = 1950, pool_list = [1,4,16,32] ):
     weight_file = h5py.File(model_weight_file_path, 'r')
     # The shape of the model should be saved separately in a json or pickle file
     # get the shapes
@@ -172,7 +172,7 @@ class HierarchicalProteinClassification():
 
     def load_trained_models(self, base_models_pattern,set_files_pattern ):
         self.load_base_models(base_models_pattern)
-        self.load_model_sets(set_files_pattern)
+        # self.load_model_sets(set_files_pattern)
         
     def load_base_models(self, base_models_pattern):
         print('Loading base models...')
@@ -248,10 +248,10 @@ class HierarchicalProteinClassification():
         os.makedirs(save_path, exist_ok=True)
         chunk_count = 0
         while True:
-            print(chunk_count, end = ',')
             self.sequences = self._sequence_file.get_chunk()
             if not self.sequences:
                 break
+            print('Predicting batch', chunk_count)
             self.predict_chunk()
             self.save_output_files(chunk_count, save_path = save_path, delimiter = delimiter)
             self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
@@ -283,13 +283,13 @@ class HierarchicalProteinClassification():
         self.labels_dict, self.send_up = {}, {}
         self.labels_dict['Subsystem'], self.send_up['Subsystem'] = self.predict_one_model(
                                                                        self.sequences, 
-                                                                       self.base_models['Subsystem'], check_subsys_sets=True
+                                                                       self.base_models['Subsystem'], check_subsys_sets=False
                                                                    )
         # 4. pass all inputs classified into the confused subsystems to the sets containing those subsystems
         # 5. update classification hashtable, correcting the results for the confused subsystems after using the sets
         # 6. add the low confidence results of confused classes to lox-confidence list 
 #         labels_dict, send_up = 
-        self.disambiguiate_subsystems(self.labels_dict['Subsystem'], self.send_up['Subsystem'])
+#         self.disambiguiate_subsystems(self.labels_dict['Subsystem'], self.send_up['Subsystem'])
         self.classify_upper_hierarchies()
         self.compile_prediction_summary()
         
@@ -341,7 +341,7 @@ class HierarchicalProteinClassification():
                     preds_dict[subsys] = preds_dict_set[i]
 #         return preds_dict, send_up
 
-    def predict_one_model(self, prots, model, check_subsys_sets = False, top = 1, ):
+    def predict_one_model(self, prots, model, check_subsys_sets=False, top = 1, ):
         predictions_dict = {} #{i: []  for i in range(model.output_shape[-1])}
         labels_dict = {}
         send_up_hierarchy_idx = [] # classify these with higher levels of hierarchy
