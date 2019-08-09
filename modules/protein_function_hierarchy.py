@@ -196,30 +196,44 @@ class HierarchicalProteinClassification():
             self.model_sets[k] = make_set_model(sets_info[k]['file'], max_len= self.max_length) 
         
     def save_output_files(self, chunk_idx, save_path='.', delimiter = '\t'):
-        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']  
+        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
         map_level = {v: i+1 for i,v in enumerate(c_level)}
-        annotation_LCA_str = delimiter.join(['Sequence ID']+c_level+['Confidence'])
-        full_annotation_str = delimiter.join(['Sequence ID','Full Annotation'])
-        for k,v in self.protein_chunk_prediction_summary.items():
-            #seq_id = self.sequences[k]
-            # LCA
-            empty_line = ['']*(len(c_level)+2)
-            empty_line[0] = k
-            level, label, confidence = v[-1]
-            for col, lab in zip(c_level, label.split('>')):
-                empty_line[map_level[col]] = lab
-            # confidence 
-            empty_line[ -1 ] = '%.4g' %v[-1][-1]
-            annotation_LCA_str += '\n'+delimiter.join(empty_line)
-            # Full annotation
-            full_annotation_str += '\n'+delimiter.join( [k, str(v)])
-        with open(os.path.join(save_path,'chunk-%d.csv' %chunk_idx),'w') as f:
+        if chunk_idx == 0:
+            annotation_LCA_str = delimiter.join(['Sequence ID'] + c_level + ['Confidence'])
+            full_annotation_str = delimiter.join(['Sequence ID', 'Full Annotation'])
+        else:
+            annotation_LCA_str = ''
+            full_annotation_str = ''
+        for k, v in self.protein_chunk_prediction_summary.items():
+            if v[-1][-1] > self.confidence_threshold:
+                # seq_id = self.sequences[k]
+                # LCA
+                empty_line = [''] * (len(c_level) + 2)
+                empty_line[0] = k
+                level, label, confidence = v[-1]
+                for col, lab in zip(c_level, label.split('>')):
+                    empty_line[map_level[col]] = lab
+                # confidence
+                empty_line[-1] = '%.4g' % v[-1][-1]
+                annotation_LCA_str += '\n' + delimiter.join(empty_line)
+                # Full annotation
+                full_annotation_str += '\n' + delimiter.join([k, str(v)])
+            else:
+                empty_line = [''] * (len(c_level) + 2)
+                empty_line[0] = k
+                level, label, confidence = v[-1]
+                for col, lab in zip(c_level, label.split('>')):
+                    empty_line[map_level[col]] = lab
+                # confidence
+                empty_line[-1] = '%.4g' % v[-1][-1]
+                full_annotation_str += '\n' + delimiter.join([k, str(v)])
+        with open(os.path.join(save_path, 'predictions_LCA.txt'), 'a') as f:
             f.write(annotation_LCA_str)
-        with open(os.path.join(save_path,'chunk-%d_full.csv' %chunk_idx),'w') as f:
+        with open(os.path.join(save_path, 'predictions_complete.txt'), 'a') as f:
             f.write(full_annotation_str)
 
     def save_output_summary(self,chunk_idx, save_path='.', delimiter = '\t'):
-        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']  
+        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
         map_level = {v: i for i,v in enumerate(c_level)}
         header = delimiter.join(c_level + ['Count'])
         annotation_summary = header
@@ -235,14 +249,29 @@ class HierarchicalProteinClassification():
         with open(os.path.join(save_path,'chunk-%d_summary.csv' %chunk_idx),'w') as f:
             f.write(annotation_summary)
 
-    def save_discarded(self,chunk_idx, save_path='.'):
-        # indices left unannotated at Superclass level
-        unannotated_idx = self.send_up.get('Superclass',set())
-        out_str = 'Sequence ID'
-        for i in unannotated_idx:
-            out_str += '\n' + self.sequences['feature.patric_id'].loc[i]
-        with open(os.path.join(save_path,'chunk-%d_discarded.csv' %chunk_idx),'w') as f:
-            f.write(out_str)
+    def save_discarded(self, chunk_idx, save_path='.', delimiter='\t'):
+        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
+        map_level = {v: i + 1 for i, v in enumerate(c_level)}
+        if chunk_idx == 0:
+            annotation_discards = delimiter.join(['Sequence ID'] + c_level + ['Confidence'])
+        else:
+            annotation_discards = ''
+        for k, v in self.protein_chunk_prediction_summary.items():
+            if v[-1][-1] < self.confidence_threshold:
+                # seq_id = self.sequences[k]
+                # LCA
+                empty_line = [''] * (len(c_level) + 2)
+                empty_line[0] = k
+                level, label, confidence = v[-1]
+                for col, lab in zip(c_level, label.split('>')):
+                    empty_line[map_level[col]] = lab
+                # confidence
+                empty_line[-1] = '%.4g' % v[-1][-1]
+                annotation_discards += '\n' + delimiter.join(empty_line)
+            else:
+                continue
+        with open(os.path.join(save_path, 'predictions_discarded.txt'), 'a') as f:
+            f.write(annotation_discards)
 
     def predict_all(self, save_path = '.', delimiter = '\t'):
         os.makedirs(save_path, exist_ok=True)
@@ -254,7 +283,7 @@ class HierarchicalProteinClassification():
             print('Predicting batch', chunk_count)
             self.predict_chunk()
             self.save_output_files(chunk_count, save_path = save_path, delimiter = delimiter)
-            self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
+            # self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
             self.save_discarded(chunk_count, save_path = save_path)
     #       self.output_DataFrame = self.make_output_DataFrame()
     #       start = chunk_count*self._sequence_file.batch_size
