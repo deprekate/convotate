@@ -28,9 +28,12 @@ def get_args():
     parser.add_argument('-fb', '--basemodel_files', action="store", type=is_valid_file, default='data/base_models/', dest='basemodel_files', help='')
     
     parser.add_argument('-o', '--outfile', action="store", default=sys.stdout, type=argparse.FileType('w'), help='where to write the output [stdout]')
-    parser.add_argument('-b', '--batch_size', action="store", type=int, default=1000, dest='batch_size', help='number of sequence to run at a time [1000]')
-    parser.add_argument('-m', '--max_length', action="store", type=int, default=1950, dest='max_length', help='maximum sequence length [1950]')
-    parser.add_argument('-c', '--confidence', action="store", type=float, default=0.9, dest='confidence_threshold', help='confidence threshold cutoff [0.9]')
+    parser.add_argument('-b', '--batch_size', action="store", type=int, default=10000, dest='batch_size',
+                        help='number of sequences to run at a time (default 10000)')
+    parser.add_argument('-m', '--max_length', action="store", type=int, default=1950, dest='max_length',
+                        help='maximum sequence length - sequences truncated after this point (default 1950)')
+    parser.add_argument('-c', '--confidence', action="store", type=float, default=0.99, dest='confidence_threshold',
+                        help='confidence threshold cutoff, between 0 and 1 (default 0.99)')
     args = parser.parse_args()
     return args
 
