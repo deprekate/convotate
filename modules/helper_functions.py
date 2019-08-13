@@ -14,6 +14,13 @@ def is_valid_file(x):
         raise argparse.ArgumentTypeError("{0} does not exist".format(x))
     return x
 
+def is_empty_file(openner):
+    def checker(fpath):
+        if os.path.isfile(fpath) and os.path.getsize(fpath) > 0:
+            raise argparse.ArgumentTypeError("output file {0} is not empty".format(fpath))
+        return openner(fpath)
+    return checker
+
 def get_args():
     usage = 'model.py [-opt1, [-opt2, ...]] infile'
     parser = argparse.ArgumentParser(description='MODEL: A program to classify genes', formatter_class=RawTextHelpFormatter, usage=usage)
@@ -27,10 +34,11 @@ def get_args():
     parser.add_argument('-fp', '--pattern_files', action="store", type=is_valid_file, default='data/set_patterns/', dest='pattern_files', help='')
     parser.add_argument('-fb', '--basemodel_files', action="store", type=is_valid_file, default='data/base_models/', dest='basemodel_files', help='')
     
-    parser.add_argument('-o', '--outfile', action="store", default=sys.stdout, type=argparse.FileType('w'), help='where to write the output [stdout]')
     parser.add_argument('-b', '--batch_size', action="store", type=int, default=1000, dest='batch_size', help='number of sequence to run at a time [1000]')
     parser.add_argument('-m', '--max_length', action="store", type=int, default=1950, dest='max_length', help='maximum sequence length [1950]')
     parser.add_argument('-c', '--confidence', action="store", type=float, default=0.9, dest='confidence_threshold', help='confidence threshold cutoff [0.9]')
+    
+    parser.add_argument('-o', '--outfile', action="store", default=sys.stdout, type=is_empty_file(argparse.FileType('w')), help='where to write the output [stdout]')
     args = parser.parse_args()
     return args
 

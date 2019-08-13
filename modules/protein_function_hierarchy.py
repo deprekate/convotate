@@ -141,7 +141,7 @@ class HierarchicalProteinClassification():
         self.__dict__.update(kwargs)
         #self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
         self._sequence_file = FastaFile(self.infile, self.batch_size) 
-	# read in all data files
+        # read in all data files
         self._ontology_file = pd.read_csv(self.ontology_file, sep='\t')
         self._subsystem_map = {k:v for k,v in pd.read_csv(self.merged_file, sep= '\t').values}
         # model_label_refs contains map of classification indices to name of label classes for all levels of hierarchy and all sets 
@@ -208,13 +208,10 @@ class HierarchicalProteinClassification():
                 empty_line[map_level[col]] = lab
             # confidence 
             empty_line[ -1 ] = '%.4g' %v[-1][-1]
-            annotation_LCA_str += '\n'+delimiter.join(empty_line)
-            # Full annotation
-            full_annotation_str += '\n'+delimiter.join( [k, str(v)])
-        with open(os.path.join(save_path,'chunk-%d.csv' %chunk_idx),'w') as f:
-            f.write(annotation_LCA_str)
-        with open(os.path.join(save_path,'chunk-%d_full.csv' %chunk_idx),'w') as f:
-            f.write(full_annotation_str)
+            self.outfile.write(delimiter.join(empty_line))
+            self.outfile.write("\n")
+            #self.outfull.write(delimiter.join( [k, str(v)]))
+            #self.outfull.write("\n")
 
     def save_output_summary(self,chunk_idx, save_path='.', delimiter = '\t'):
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']  
@@ -229,18 +226,16 @@ class HierarchicalProteinClassification():
                 for col, lab in zip(c_level, label.split('>')):
                     empty_line[map_level[col]] = lab
                 empty_line[-1] = str(count)
-                annotation_summary += '\n'+delimiter.join(empty_line)
-        with open(os.path.join(save_path,'chunk-%d_summary.csv' %chunk_idx),'w') as f:
-            f.write(annotation_summary)
+            self.outsumm.write(delimiter.join(empty_line))
+            self.outsumm.write("\n")
 
     def save_discarded(self,chunk_idx, save_path='.'):
         # indices left unannotated at Superclass level
         unannotated_idx = self.send_up.get('Superclass',set())
         out_str = 'Sequence ID'
         for i in unannotated_idx:
-            out_str += '\n' + self.sequences['feature.patric_id'].loc[i]
-        with open(os.path.join(save_path,'chunk-%d_discarded.csv' %chunk_idx),'w') as f:
-            f.write(out_str)
+            self.outdrop.write(self.sequences['feature.patric_id'].loc[i])
+            self.outdrop.write("\n")
 
     def predict_all(self, save_path = '.', delimiter = '\t'):
         os.makedirs(save_path, exist_ok=True)
@@ -252,8 +247,8 @@ class HierarchicalProteinClassification():
                 break
             self.predict_chunk()
             self.save_output_files(chunk_count, save_path = save_path, delimiter = delimiter)
-            self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
-            self.save_discarded(chunk_count, save_path = save_path)
+    #        self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
+    #        self.save_discarded(chunk_count, save_path = save_path)
     #       self.output_DataFrame = self.make_output_DataFrame()
     #       start = chunk_count*self._sequence_file.batch_size
     #       self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))
