@@ -105,15 +105,17 @@ class SpatialPyramidPooling1D(Layer):
     
 amino_acids = {a:i for i,a in enumerate(string.ascii_uppercase+'_')} # '_':unknown stuff
 
-def barcode1(seq, length=1500, amino_acids=amino_acids):
-    protein_barcodes = np.zeros((length, len(amino_acids)), dtype = np.uint8)
+def barcode1(seq, length=1950, amino_acids=amino_acids):
+    protein_barcodes = np.zeros((length, len(amino_acids)), dtype = np.float16)
+    s = np.sqrt(len(amino_acids))
     for i2,j in enumerate(seq[:length]):
-        protein_barcodes[i2,amino_acids.get(j,26)] = 1 # if character not found, map to '_'
+        protein_barcodes[i2,amino_acids.get(j, 26)] = 1 # if character not found, map to '_'
+        protein_barcodes[i2, amino_acids[j]] = 1 / s
     return protein_barcodes
 
 
 
-def make_set_model(model_weight_file_path,max_len = 1500, pool_list = [1,4,16,32] ):
+def make_set_model(model_weight_file_path,max_len = 1950, pool_list = [1,4,16,32] ):
     weight_file = h5py.File(model_weight_file_path, 'r')
     # The shape of the model should be saved separately in a json or pickle file
     # get the shapes
@@ -170,7 +172,7 @@ class HierarchicalProteinClassification():
 
     def load_trained_models(self, base_models_pattern,set_files_pattern ):
         self.load_base_models(base_models_pattern)
-        self.load_model_sets(set_files_pattern)
+        # self.load_model_sets(set_files_pattern)
         
     def load_base_models(self, base_models_pattern):
         print('Loading base models...')
@@ -194,27 +196,44 @@ class HierarchicalProteinClassification():
             self.model_sets[k] = make_set_model(sets_info[k]['file'], max_len= self.max_length) 
         
     def save_output_files(self, chunk_idx, save_path='.', delimiter = '\t'):
-        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']  
+        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
         map_level = {v: i+1 for i,v in enumerate(c_level)}
-        annotation_LCA_str = delimiter.join(['Sequence ID']+c_level+['Confidence'])
-        full_annotation_str = delimiter.join(['Sequence ID','Full Annotation'])
-        for k,v in self.protein_chunk_prediction_summary.items():
-            #seq_id = self.sequences[k]
-            # LCA
-            empty_line = ['']*(len(c_level)+2)
-            empty_line[0] = k
-            level, label, confidence = v[-1]
-            for col, lab in zip(c_level, label.split('>')):
-                empty_line[map_level[col]] = lab
-            # confidence 
-            empty_line[ -1 ] = '%.4g' %v[-1][-1]
-            self.outfile.write(delimiter.join(empty_line))
-            self.outfile.write("\n")
-            #self.outfull.write(delimiter.join( [k, str(v)]))
-            #self.outfull.write("\n")
+        if chunk_idx == 0:
+            annotation_LCA_str = delimiter.join(['Sequence ID'] + c_level + ['Confidence'])
+            full_annotation_str = delimiter.join(['Sequence ID', 'Full Annotation'])
+        else:
+            annotation_LCA_str = ''
+            full_annotation_str = ''
+        for k, v in self.protein_chunk_prediction_summary.items():
+            if v[-1][-1] > self.confidence_threshold:
+                # seq_id = self.sequences[k]
+                # LCA
+                empty_line = [''] * (len(c_level) + 2)
+                empty_line[0] = k
+                level, label, confidence = v[-1]
+                for col, lab in zip(c_level, label.split('>')):
+                    empty_line[map_level[col]] = lab
+                # confidence
+                empty_line[-1] = '%.4g' % v[-1][-1]
+                annotation_LCA_str += '\n' + delimiter.join(empty_line)
+                # Full annotation
+                full_annotation_str += '\n' + delimiter.join([k, str(v)])
+            else:
+                empty_line = [''] * (len(c_level) + 2)
+                empty_line[0] = k
+                level, label, confidence = v[-1]
+                for col, lab in zip(c_level, label.split('>')):
+                    empty_line[map_level[col]] = lab
+                # confidence
+                empty_line[-1] = '%.4g' % v[-1][-1]
+                full_annotation_str += '\n' + delimiter.join([k, str(v)])
+        with open(os.path.join(save_path, 'predictions_LCA.txt'), 'a') as f:
+            f.write(annotation_LCA_str)
+        with open(os.path.join(save_path, 'predictions_complete.txt'), 'a') as f:
+            f.write(full_annotation_str)
 
     def save_output_summary(self,chunk_idx, save_path='.', delimiter = '\t'):
-        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']  
+        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
         map_level = {v: i for i,v in enumerate(c_level)}
         header = delimiter.join(c_level + ['Count'])
         annotation_summary = header
@@ -229,26 +248,42 @@ class HierarchicalProteinClassification():
             self.outsumm.write(delimiter.join(empty_line))
             self.outsumm.write("\n")
 
-    def save_discarded(self,chunk_idx, save_path='.'):
-        # indices left unannotated at Superclass level
-        unannotated_idx = self.send_up.get('Superclass',set())
-        out_str = 'Sequence ID'
-        for i in unannotated_idx:
-            self.outdrop.write(self.sequences['feature.patric_id'].loc[i])
-            self.outdrop.write("\n")
+    def save_discarded(self, chunk_idx, save_path='.', delimiter='\t'):
+        c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
+        map_level = {v: i + 1 for i, v in enumerate(c_level)}
+        if chunk_idx == 0:
+            annotation_discards = delimiter.join(['Sequence ID'] + c_level + ['Confidence'])
+        else:
+            annotation_discards = ''
+        for k, v in self.protein_chunk_prediction_summary.items():
+            if v[-1][-1] < self.confidence_threshold:
+                # seq_id = self.sequences[k]
+                # LCA
+                empty_line = [''] * (len(c_level) + 2)
+                empty_line[0] = k
+                level, label, confidence = v[-1]
+                for col, lab in zip(c_level, label.split('>')):
+                    empty_line[map_level[col]] = lab
+                # confidence
+                empty_line[-1] = '%.4g' % v[-1][-1]
+                annotation_discards += '\n' + delimiter.join(empty_line)
+            else:
+                continue
+        with open(os.path.join(save_path, 'predictions_discarded.txt'), 'a') as f:
+            f.write(annotation_discards)
 
     def predict_all(self, save_path = '.', delimiter = '\t'):
         os.makedirs(save_path, exist_ok=True)
         chunk_count = 0
         while True:
-            print(chunk_count, end = ',')
             self.sequences = self._sequence_file.get_chunk()
             if not self.sequences:
                 break
+            print('Predicting batch', chunk_count)
             self.predict_chunk()
             self.save_output_files(chunk_count, save_path = save_path, delimiter = delimiter)
-    #        self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
-    #        self.save_discarded(chunk_count, save_path = save_path)
+            # self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
+            self.save_discarded(chunk_count, save_path = save_path)
     #       self.output_DataFrame = self.make_output_DataFrame()
     #       start = chunk_count*self._sequence_file.batch_size
     #       self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))
@@ -276,13 +311,13 @@ class HierarchicalProteinClassification():
         self.labels_dict, self.send_up = {}, {}
         self.labels_dict['Subsystem'], self.send_up['Subsystem'] = self.predict_one_model(
                                                                        self.sequences, 
-                                                                       self.base_models['Subsystem'], check_subsys_sets=True
+                                                                       self.base_models['Subsystem'], check_subsys_sets=False
                                                                    )
         # 4. pass all inputs classified into the confused subsystems to the sets containing those subsystems
         # 5. update classification hashtable, correcting the results for the confused subsystems after using the sets
         # 6. add the low confidence results of confused classes to lox-confidence list 
 #         labels_dict, send_up = 
-        self.disambiguiate_subsystems(self.labels_dict['Subsystem'], self.send_up['Subsystem'])
+#         self.disambiguiate_subsystems(self.labels_dict['Subsystem'], self.send_up['Subsystem'])
         self.classify_upper_hierarchies()
         self.compile_prediction_summary()
         
@@ -334,7 +369,7 @@ class HierarchicalProteinClassification():
                     preds_dict[subsys] = preds_dict_set[i]
 #         return preds_dict, send_up
 
-    def predict_one_model(self, prots, model, check_subsys_sets = False, top = 1, ):
+    def predict_one_model(self, prots, model, check_subsys_sets=False, top = 1, ):
         predictions_dict = {} #{i: []  for i in range(model.output_shape[-1])}
         labels_dict = {}
         send_up_hierarchy_idx = [] # classify these with higher levels of hierarchy
