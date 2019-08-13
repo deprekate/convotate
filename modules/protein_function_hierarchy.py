@@ -143,7 +143,7 @@ class HierarchicalProteinClassification():
         self.__dict__.update(kwargs)
         #self._sequence_file = pd.read_csv(self.infile ,sep ='\t', iterator=True, chunksize=self.batch_size )
         self._sequence_file = FastaFile(self.infile, self.batch_size) 
-    # read in all data files
+        # read in all data files
         self._ontology_file = pd.read_csv(self.ontology_file, sep='\t')
         self._subsystem_map = {k:v for k,v in pd.read_csv(self.merged_file, sep= '\t').values}
         # model_label_refs contains map of classification indices to name of label classes for all levels of hierarchy and all sets 
@@ -245,9 +245,8 @@ class HierarchicalProteinClassification():
                 for col, lab in zip(c_level, label.split('>')):
                     empty_line[map_level[col]] = lab
                 empty_line[-1] = str(count)
-                annotation_summary += '\n'+delimiter.join(empty_line)
-        with open(os.path.join(save_path,'chunk-%d_summary.csv' %chunk_idx),'w') as f:
-            f.write(annotation_summary)
+            self.outsumm.write(delimiter.join(empty_line))
+            self.outsumm.write("\n")
 
     def save_discarded(self, chunk_idx, save_path='.', delimiter='\t'):
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']

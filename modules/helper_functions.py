@@ -14,6 +14,13 @@ def is_valid_file(x):
         raise argparse.ArgumentTypeError("{0} does not exist".format(x))
     return x
 
+def is_empty_file(openner):
+    def checker(fpath):
+        if os.path.isfile(fpath) and os.path.getsize(fpath) > 0:
+            raise argparse.ArgumentTypeError("output file {0} is not empty".format(fpath))
+        return openner(fpath)
+    return checker
+
 def get_args():
     usage = 'model.py [-opt1, [-opt2, ...]] infile'
     parser = argparse.ArgumentParser(description='MODEL: A program to classify genes', formatter_class=RawTextHelpFormatter, usage=usage)
@@ -34,6 +41,8 @@ def get_args():
                         help='maximum sequence length - sequences truncated after this point (default 1950)')
     parser.add_argument('-c', '--confidence', action="store", type=float, default=0.99, dest='confidence_threshold',
                         help='confidence threshold cutoff, between 0 and 1 (default 0.99)')
+
+
     args = parser.parse_args()
     return args
 
