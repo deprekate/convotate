@@ -3,6 +3,8 @@ import re
 import sys
 import argparse
 from argparse import RawTextHelpFormatter
+from argparse import ArgumentTypeError as err
+from modules.pathtype import PathType
 
 def natural_sorted(unsorted_list):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
@@ -21,28 +23,54 @@ def is_empty_file(openner):
         return openner(fpath)
     return checker
 
+def is_empty_folder(x):
+    def checker(fpath):
+        if os.path.exists(fpath):
+            if os.path.getsize(fpath) > 0:
+                pass
+        else:
+            raise argparse.ArgumentTypeError("output file {0} is not empty".format(fpath))
+        return openner(fpath)
+    return checker
+
+class set_default_folder(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, values)
+        default_folder = getattr(namespace, 'outdir')
+        try:
+            default_folder = default_folder%values
+        except TypeError:
+            pass
+        setattr(namespace, 'outdir', default_folder)
+
 def get_args():
     usage = 'model.py [-opt1, [-opt2, ...]] infile'
     parser = argparse.ArgumentParser(description='MODEL: A program to classify genes', formatter_class=RawTextHelpFormatter, usage=usage)
-    parser.add_argument('infile', type=is_valid_file, help='input file in fasta format')
-
-    parser.add_argument('-fl', '--label_file', action="store", type=is_valid_file, default='data/labels.pkl', dest='label_file', help='model label reference file')
-    parser.add_argument('-fo', '--ontology_file', action="store", type=is_valid_file, default='data/ontology.txt', dest='ontology_file', help='')
-    parser.add_argument('-fm', '--merged_file', action="store", type=is_valid_file, default='data/merged_subsystems.txt', dest='merged_file', help='')
-    parser.add_argument('-fi', '--indexes_file', action="store", type=is_valid_file, default='data/label_indexes.pkl', dest='indexes_file', help='')
-
-    parser.add_argument('-fp', '--pattern_files', action="store", type=is_valid_file, default='data/set_patterns/', dest='pattern_files', help='')
-    parser.add_argument('-fb', '--basemodel_files', action="store", type=is_valid_file, default='data/base_models/', dest='basemodel_files', help='')
-    
-    parser.add_argument('-o', '--outfile', action="store", default=sys.stdout, type=argparse.FileType('w'), help='where to write the output [stdout]')
-    parser.add_argument('-b', '--batch_size', action="store", type=int, default=10000, dest='batch_size',
-                        help='number of sequences to run at a time (default 10000)')
-    parser.add_argument('-m', '--max_length', action="store", type=int, default=1950, dest='max_length',
-                        help='maximum sequence length - sequences truncated after this point (default 1950)')
-    parser.add_argument('-c', '--confidence', action="store", type=float, default=0.99, dest='confidence_threshold',
-                        help='confidence threshold cutoff, between 0 and 1 (default 0.99)')
-
-
+    parser.add_argument('infile', type=is_valid_file, help='input file in fasta format', action=set_default_folder)
+    parser.add_argument('-fl', '--label_file',      action="store", type=is_valid_file, default='data/labels.pkl', dest='label_file',
+                                                    help='model label reference file')
+    parser.add_argument('-fo', '--ontology_file',   action="store", type=is_valid_file, default='data/ontology.txt', dest='ontology_file',
+                                                    help='')
+    parser.add_argument('-fm', '--merged_file',     action="store", type=is_valid_file, default='data/merged_subsystems.txt', dest='merged_file',
+                                                    help='')
+    parser.add_argument('-fi', '--indexes_file',    action="store", type=is_valid_file, default='data/label_indexes.pkl', dest='indexes_file',
+                                                    help='')
+    parser.add_argument('-fp', '--pattern_files',   action="store", type=is_valid_file, default='data/set_patterns/', dest='pattern_files',
+                                                    help='')
+    parser.add_argument('-fb', '--basemodel_files', action="store", type=is_valid_file, default='data/base_models/', dest='basemodel_files',
+                                                    help='')
+    parser.add_argument('-b', '--batch_size',       action="store", type=int, default=10000, dest='batch_size',
+                                                    help='number of sequences to run at a time (default 10000)')
+    parser.add_argument('-m', '--max_length',       action="store", type=int, default=1950, dest='max_length',
+                                                    help='maximum sequence length - sequences truncated after this point (default 1950)')
+    parser.add_argument('-c', '--confidence',       action="store", type=float, default=0.99, dest='confidence_threshold',
+                                                    help='confidence threshold cutoff, between 0 and 1 (default 0.99)')
+    parser.add_argument('-d', '--delimiter',        action="store", type=str, default='\t', dest='delimiter',
+                                                    help='output delimiter character [TAB]')
+    parser.add_argument('-o', '--outdir',           action  = "store",
+                                                    default = "%s_CONVOTATE",
+                                                    type    = PathType(exists=None, type='dir', empty=True, dash_ok=False),
+                                                    help    = "where to write the output []")
     args = parser.parse_args()
     return args
 

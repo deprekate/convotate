@@ -195,17 +195,16 @@ class HierarchicalProteinClassification():
             print('Loading %s from: %s' %(k,sets_info[k]['file']))
             self.model_sets[k] = make_set_model(sets_info[k]['file'], max_len= self.max_length) 
         
-    def save_output_files(self, chunk_idx, save_path='.', delimiter = '\t'):
+    def save_output_files(self, chunk_idx):
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
         map_level = {v: i+1 for i,v in enumerate(c_level)}
-        if chunk_idx == 0:
-            annotation_LCA_str = delimiter.join(['Sequence ID'] + c_level + ['Confidence'])
-            full_annotation_str = delimiter.join(['Sequence ID', 'Full Annotation'])
-        else:
-            annotation_LCA_str = ''
-            full_annotation_str = ''
-        for k, v in self.protein_chunk_prediction_summary.items():
-            if v[-1][-1] > self.confidence_threshold:
+        with open(os.path.join(self.outdir, 'predictions_LCA.txt'), 'a') as a,open(os.path.join(self.outdir, 'predictions_complete.txt'), 'a') as b:
+            if chunk_idx == 0:
+                a.write(self.delimiter.join(['Sequence ID'] + c_level + ['Confidence']))
+                a.write("\n")
+                b.write(self.delimiter.join(['Sequence ID', 'Full Annotation']))
+                b.write("\n")
+            for k, v in self.protein_chunk_prediction_summary.items():
                 # seq_id = self.sequences[k]
                 # LCA
                 empty_line = [''] * (len(c_level) + 2)
@@ -215,22 +214,12 @@ class HierarchicalProteinClassification():
                     empty_line[map_level[col]] = lab
                 # confidence
                 empty_line[-1] = '%.4g' % v[-1][-1]
-                annotation_LCA_str += '\n' + delimiter.join(empty_line)
                 # Full annotation
-                full_annotation_str += '\n' + delimiter.join([k, str(v)])
-            else:
-                empty_line = [''] * (len(c_level) + 2)
-                empty_line[0] = k
-                level, label, confidence = v[-1]
-                for col, lab in zip(c_level, label.split('>')):
-                    empty_line[map_level[col]] = lab
-                # confidence
-                empty_line[-1] = '%.4g' % v[-1][-1]
-                full_annotation_str += '\n' + delimiter.join([k, str(v)])
-        with open(os.path.join(save_path, 'predictions_LCA.txt'), 'a') as f:
-            f.write(annotation_LCA_str)
-        with open(os.path.join(save_path, 'predictions_complete.txt'), 'a') as f:
-            f.write(full_annotation_str)
+                b.write(self.delimiter.join([k, str(v)]))
+                b.write("\n")
+                if v[-1][-1] > self.confidence_threshold:
+                    a.write(self.delimiter.join(empty_line))
+                    a.write("\n")
 
     def save_output_summary(self,chunk_idx, save_path='.', delimiter = '\t'):
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
@@ -251,29 +240,26 @@ class HierarchicalProteinClassification():
     def save_discarded(self, chunk_idx, save_path='.', delimiter='\t'):
         c_level = ['Superclass', 'Class', 'Subclass', 'Subsystem']
         map_level = {v: i + 1 for i, v in enumerate(c_level)}
-        if chunk_idx == 0:
-            annotation_discards = delimiter.join(['Sequence ID'] + c_level + ['Confidence'])
-        else:
-            annotation_discards = ''
-        for k, v in self.protein_chunk_prediction_summary.items():
-            if v[-1][-1] < self.confidence_threshold:
-                # seq_id = self.sequences[k]
-                # LCA
-                empty_line = [''] * (len(c_level) + 2)
-                empty_line[0] = k
-                level, label, confidence = v[-1]
-                for col, lab in zip(c_level, label.split('>')):
-                    empty_line[map_level[col]] = lab
-                # confidence
-                empty_line[-1] = '%.4g' % v[-1][-1]
-                annotation_discards += '\n' + delimiter.join(empty_line)
-            else:
-                continue
-        with open(os.path.join(save_path, 'predictions_discarded.txt'), 'a') as f:
-            f.write(annotation_discards)
+        with open(os.path.join(self.outdir, 'predictions_discarded.txt'), 'a') as f:
+            if chunk_idx == 0:
+                f.write(self.delimiter.join(['Sequence ID'] + c_level + ['Confidence']))
+                f.write("\n")
+            for k, v in self.protein_chunk_prediction_summary.items():
+                if v[-1][-1] < self.confidence_threshold:
+                    # seq_id = self.sequences[k]
+                    # LCA
+                    empty_line = [''] * (len(c_level) + 2)
+                    empty_line[0] = k
+                    level, label, confidence = v[-1]
+                    for col, lab in zip(c_level, label.split('>')):
+                        empty_line[map_level[col]] = lab
+                    # confidence
+                    empty_line[-1] = '%.4g' % v[-1][-1]
+                    f.write(self.delimiter.join(empty_line))
+                    f.write("\n")
 
-    def predict_all(self, save_path = '.', delimiter = '\t'):
-        os.makedirs(save_path, exist_ok=True)
+    def predict_all(self):
+        os.makedirs(self.outdir, exist_ok=True)
         chunk_count = 0
         while True:
             self.sequences = self._sequence_file.get_chunk()
@@ -281,9 +267,9 @@ class HierarchicalProteinClassification():
                 break
             print('Predicting batch', chunk_count)
             self.predict_chunk()
-            self.save_output_files(chunk_count, save_path = save_path, delimiter = delimiter)
+            self.save_output_files(chunk_count)
+            self.save_discarded(chunk_count)
             # self.save_output_summary(chunk_count, save_path = save_path, delimiter = delimiter)
-            self.save_discarded(chunk_count, save_path = save_path)
     #       self.output_DataFrame = self.make_output_DataFrame()
     #       start = chunk_count*self._sequence_file.batch_size
     #       self.output_DataFrame.to_csv(os.path.join(save_path, 'seq_predictions_%d-%d.csv' %(start, start+ len(self.sequences) ) ))

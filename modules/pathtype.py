@@ -64,7 +64,6 @@ class PathType(object):
                  If None, the type of file/directory/symlink is not checked.
            dash_ok: whether to allow "-" as stdin/stdout
         """
-        print("PathType_init")
         assert exists in (EXIST_CHECK, EXIST_INVERT, EXIST_EITHER)
         assert empty  in (EMPTY_CHECK, EMPTY_INVERT, EMPTY_EITHER)
         # Make sure type is file, dir, sym, None, list, or callable.
@@ -84,7 +83,6 @@ class PathType(object):
         self._dash_ok = dash_ok
 
     def __call__(self, string):
-        print("PathType_call")
         if string == '-':
             # the special argument "-" means sys.std[in/out]
             if self._type == TYPE_DIR:

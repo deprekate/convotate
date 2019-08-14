@@ -14,7 +14,7 @@ def main(argv):
 
     hi = ph.HierarchicalProteinClassification(**vars(cl_args))
 
-    hi.predict_all(save_path='testpreds/')
+    hi.predict_all()
 
     return 1
 
