@@ -68,7 +68,7 @@ There are some configurable options:
 -o OUTFILE, --outfile OUTFILE
                         where to write the output [stdout]
 -b BATCH_SIZE, --batch_size BATCH_SIZE
-                        number of sequences to run at a time [1000]
+                        number of sequences to run at a time [10000]
 -m MAX_LENGTH, --max_length MAX_LENGTH
                         maximum sequence length - sequences will be truncated beyond this point. [1950]
 -c CONFIDENCE_THRESHOLD, --confidence CONFIDENCE_THRESHOLD
