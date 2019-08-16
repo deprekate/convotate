@@ -1,5 +1,5 @@
 ## Introduction
-CONVOTATE is a tool to classify prokaryotic genes using neural network models. It reads in (translated) fasta files and returns predictions for function based on the Subsystems ontology. In our benchmarks, high confidence (>0.99) predictions returned AUC scores >0.999.
+CONVOTATE is a tool to classify prokaryotic genes using neural network models. It reads in (translated) fasta files and returns predictions for function based on the Subsystems (SEED) ontology. In our benchmarks, high confidence (>0.99) predictions returned AUC scores >0.999.
 
 Advantages of CONVOTATE:
 1. Fast: 20,000-70,000 annotations per minute with GPU, 600 per minute on a 13-inch macbook pro laptop.
@@ -109,4 +109,4 @@ which will output devices used by Tensorflow. If you can see a GPU there, Tensor
 
 #### HPCs
 
-GPU usage on HPC hardware may be less straightforward but should still be achievable. We have successfully tested CONVOTATE on two HPCs and found that they required specific versions of python and TensorFlow to suit the CUDA version on the cluster. Our recommendation is to get the GPU/CUDA information, and find the compatible versions of tensorflow and python. E.g. one of the clusters required the combination of python 3.5.1 with tensorflow <=1.10. 
+GPU usage on HPC hardware may be less straightforward but should still be achievable. We have successfully tested CONVOTATE on two HPCs and found that they required specific versions of python and TensorFlow to suit the CUDA version on the cluster. Our recommendation is to get the GPU/CUDA information, and find the compatible versions of tensorflow and python. Once again, the use of conda environments simplifies this process. E.g. one of the clusters required the combination of python 3.5.1 with tensorflow <=1.10.
