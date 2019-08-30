@@ -12,6 +12,9 @@ def natural_sorted(unsorted_list):
     return sorted(unsorted_list, key=alphanum_key)
 
 def is_valid_file(x):
+    convotate_location = os.path.dirname(os.path.dirname(__file__))
+    if x in ['data/labels.pkl', 'data/ontology.txt', 'data/merged_subsystems.txt', 'data/label_indexes.pkl', 'data/base_models/'] and os.getcwd() != convotate_location:
+        x = os.path.join(convotate_location, x)
     if not os.path.exists(x):
         raise argparse.ArgumentTypeError("{0} does not exist".format(x))
     return x
@@ -55,8 +58,8 @@ def get_args():
                                                     help='')
     parser.add_argument('-fi', '--indexes_file',    action="store", type=is_valid_file, default='data/label_indexes.pkl', dest='indexes_file',
                                                     help='')
-    parser.add_argument('-fp', '--pattern_files',   action="store", type=is_valid_file, default='data/set_patterns/', dest='pattern_files',
-                                                    help='')
+    #parser.add_argument('-fp', '--pattern_files',   action="store", type=is_valid_file, default='data/set_patterns/', dest='pattern_files',
+    #                                                help='')
     parser.add_argument('-fb', '--basemodel_files', action="store", type=is_valid_file, default='data/base_models/', dest='basemodel_files',
                                                     help='')
     parser.add_argument('-b', '--batch_size',       action="store", type=int, default=10000, dest='batch_size',

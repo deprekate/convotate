@@ -150,7 +150,8 @@ class HierarchicalProteinClassification():
         self.model_label_refs = pk.load(open(self.label_file,'rb'))
         self.ontology = self.get_ontology()
         self.get_subsystem_sets_map(self.indexes_file)
-        self.load_trained_models(self.basemodel_files, self.pattern_files)
+        self.load_trained_models(self.basemodel_files)
+        #self.load_trained_models(self.basemodel_files, self.pattern_files)
         self.classification_level = {i:k for i,k in enumerate(['Superclass', 'Class', 'Subclass', 'Subsystem']) }
         
     def get_ontology(self ):
@@ -170,7 +171,7 @@ class HierarchicalProteinClassification():
             for s in subsys_list:
                 self.subsys_to_sets_map[s] = self.subsys_to_sets_map.get(s,[]) + [set_num]
 
-    def load_trained_models(self, base_models_pattern,set_files_pattern ):
+    def load_trained_models(self, base_models_pattern):
         self.load_base_models(base_models_pattern)
         # self.load_model_sets(set_files_pattern)
         
