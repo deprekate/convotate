@@ -35,7 +35,7 @@ MQICRGKETCKAGRVFKMEKQNRTEQISKLQKESLDILVIGGGSTGTGAAFDAAKRGYKTALIEKKDFASGTSSRSTKLI
 ```
 Commands to run CONVOTATE on included sample data (or replace tests/small.fasta with /path/to/your/file.fasta):
 ```sh
-python3 convotate.py tests/small.fasta 
+python3 convotate.py tests/small_testset.faa 
 ```
 
 CONVOTATE takes the input sequences, and runs predictions at the lowest hierarchical level (Subsystems). If a result is below a confidence threshhold, it will send that sequence up the hierarchy to be classified at the next level as so:
