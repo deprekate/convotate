@@ -47,8 +47,8 @@ class set_default_folder(argparse.Action):
         setattr(namespace, 'outdir', default_folder)
 
 def get_args():
-    usage = 'model.py [-opt1, [-opt2, ...]] infile'
-    parser = argparse.ArgumentParser(description='MODEL: A program to classify genes', formatter_class=RawTextHelpFormatter, usage=usage)
+    usage = 'convotate.py [-opt1, [-opt2, ...]] infile'
+    parser = argparse.ArgumentParser(description='CONVOTATE: A program to classify genes', formatter_class=RawTextHelpFormatter, usage=usage)
     parser.add_argument('infile', type=is_valid_file, help='input file in fasta format', action=set_default_folder)
     parser.add_argument('-fl', '--label_file',      action="store", type=is_valid_file, default='data/labels.pkl', dest='label_file',
                                                     help='model label reference file')
